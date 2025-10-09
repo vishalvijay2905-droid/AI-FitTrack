@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vishal FitTrack - AI-Powered Mobile Platform for Democratizing Sports Talent Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<style>
+/* GLOBAL STYLES */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+body {
+  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+  background-size: cover;
+  color:#e6f2e6;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  backdrop-filter: brightness(0.5) blur(2px);
+}
+
+/* NAVIGATION */
+nav {
+  width:100%;
+  background: rgba(0,0,0,0.7);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+nav h1 { 
+  color:#39ff14; 
+  font-family:'Orbitron', sans-serif; 
+  font-size:1.8rem; 
+}
+nav h1 span {
+  font-size:0.7rem;
+  color:#e6f2e6;
+  margin-left:10px;
+  font-variant: small-caps;
+}
+nav button { background:#39ff14; color:#000; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:600; transition:0.3s; }
+nav button:hover { background:#1eff00; transform:scale(1.05); }
+
+/* CONTAINER */
+.container { width:95%; max-width:600px; margin:20px auto; display:flex; flex-direction:column; gap:15px; }
+
+/* CARD */
+.card {
+  background: rgba(0,0,0,0.6);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 0 12px rgba(57,255,20,0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-5px); box-shadow:0 0 25px rgba(57,255,20,0.8); }
+
+/* INPUTS & BUTTONS */
+input, select, textarea, button { width:100%; margin:6px 0; padding:10px; border-radius:8px; border:none; font-size:1rem; }
+input, select, textarea { background: rgba(0,0,0,0.4); color:#e6f2e6; }
+button { background:#39ff14; color:#000; font-weight:600; cursor:pointer; transition:0.3s; }
+button:hover { background:#1eff00; transform:scale(1.05); }
+a { color:#39ff14; text-decoration:none; cursor:pointer; transition:0.3s; }
+a:hover { color:#1eff00; }
+
+/* TABS */
+.tabs { display:flex; justify-content:space-around; margin:15px 0; }
+.tabs button { flex:1; background: rgba(0,0,0,0.4); border:none; margin:3px; padding:8px; color:#e6f2e6; border-radius:6px; transition:0.3s; font-size:0.9rem; }
+.tabs button.active { background:#39ff14; color:#000; }
+
+/* HISTORY & MOTIVATION */
+.history { background: rgba(0,0,0,0.3); padding:10px; border-radius:8px; max-height:150px; overflow-y:auto; font-size:0.85rem; }
+.motivation { background:#1eff00; padding:10px; border-radius:8px; display:none; color:#000; font-weight:600; text-align:center; margin-top:10px; animation:fadeIn 0.8s ease; }
+
+@keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
+
+/* FLOATING BUTTONS */
+.floating {
+  position: fixed;
+  bottom:20px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:1.5rem;
+  color:#000;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 5px 12px rgba(0,0,0,0.5);
+  z-index:100;
+  transition:0.3s;
+}
+#emergency { right:20px; background:#ff4c4c; }
+#emergency:hover { background:#ff0000; }
+#tips { right:80px; background:#39ff14; }
+#tips:hover { background:#1eff00; }
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  nav h1 { font-size:1.5rem; }
+  .tabs { flex-direction: column; }
+  .tabs button { margin:4px 0; }
+}
+.hidden { display:none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>VISHAL FITTRACK <span>AI-Powered Mobile Platform for Democratizing Sports Talent Assessment</span></h1>
+  <button onclick="logout()">Logout</button>
+</nav>
+
+<div class="container">
+
+  <!-- LOGIN/SIGNUP -->
+  <div id="authCard" class="card">
+    <h2>Welcome</h2>
+    <p>AI-Powered Fitness Tracker</p>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p style="text-align:center; margin:8px 0;">or</p>
+    <button onclick="toggleSignup()">Create Account</button>
+    <p style="text-align:right; margin-top:5px;"><a onclick="forgotPassword()">Forgot Password?</a></p>
+
+    <div id="signupForm" class="hidden">
+      <input type="email" id="email" placeholder="Email">
+      <input type="number" id="age" placeholder="Age">
+      <input type="number" id="weight" placeholder="Weight (kg)">
+      <input type="number" id="height" placeholder="Height (cm)">
+      <select id="goal">
+        <option value="">Select Goal</option>
+        <option>Weight Loss</option>
+        <option>Muscle Gain</option>
+        <option>Endurance</option>
+        <option>General Fitness</option>
+      </select>
+      <button onclick="signup()">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <div class="card">
+      <h2>👋 Hello, <span id="displayUser"></span></h2>
+      <p>Your AI Fitness Assistant is here!</p>
+    </div>
+
+    <div class="tabs">
+      <button class="active" onclick="showTab('workout')">🏋️ Workout</button>
+      <button onclick="showTab('diet')">🥗 Diet</button>
+      <button onclick="showTab('profile')">👤 Profile</button>
+      <button onclick="showTab('ai')">🤖 AI Tips</button>
+    </div>
+
+    <!-- WORKOUT -->
+    <div id="workoutTab" class="card">
+      <h3>Workout Tracker</h3>
+      <select id="workoutType">
+        <option>Gym</option>
+        <option>Running</option>
+        <option>Yoga</option>
+        <option>Cardio</option>
+      </select>
+      <input type="number" id="duration" placeholder="Duration (min)">
+      <textarea id="notes" placeholder="Notes (optional)"></textarea>
+      <button onclick="logWorkout()">Log Workout</button>
+      <div class="history" id="workoutHistory">No workouts logged yet.</div>
+    </div>
+
+    <!-- DIET -->
+    <div id="dietTab" class="card hidden">
+      <h3>Diet Tracker</h3>
+      <select id="mealType">
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snack</option>
+      </select>
+      <input type="text" id="food" placeholder="Food Items">
+      <input type="number" id="calories" placeholder="Calories">
+      <button onclick="logDiet()">Log Meal & AI Check</button>
+      <div class="history" id="dietHistory">No meals logged yet.</div>
+      <p id="dietSuggestion" style="margin-top:10px; color:#39ff14; font-weight:600;"></p>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profileTab" class="card hidden">
+      <h3>Profile</h3>
+      <p><b>Email:</b> <span id="profileEmail">-</span></p>
+      <p><b>Age:</b> <span id="profileAge">-</span></p>
+      <p><b>Weight:</b> <span id="profileWeight">-</span> kg</p>
+      <p><b>Height:</b> <span id="profileHeight">-</span> cm</p>
+      <p><b>Goal:</b> <span id="profileGoal">-</span></p>
+    </div>
+
+    <!-- AI TIPS -->
+    <div id="aiTab" class="card hidden">
+      <h3>AI Suggestions</h3>
+      <canvas id="aiChart" height="200"></canvas>
+      <p style="margin-top:10px;" id="aiWorkout">Workout Suggestion: </p>
+      <p id="aiDiet">Diet Suggestion: </p>
+    </div>
+
+    <div id="motivation" class="motivation"></div>
+  </div>
+</div>
+
+<!-- FLOATING BUTTONS -->
+<div id="emergency" class="floating" onclick="emergencyCall()">📞</div>
+<div id="tips" class="floating" onclick="showTip()">💡</div>
+
+<script>
+let currentUser=null;
+function toggleSignup(){ document.getElementById("signupForm").classList.toggle("hidden"); }
+function forgotPassword(){ const email = prompt("Enter your registered email:"); if(email) alert("Reset instructions sent to "+email); }
+function signup(){ const user={username:document.getElementById("username").value,password:document.getElementById("password").value,email:document.getElementById("email").value,age:document.getElementById("age").value,weight:document.getElementById("weight").value,height:document.getElementById("height").value,goal:document.getElementById("goal").value}; localStorage.setItem(user.username,JSON.stringify(user)); alert("Signup successful! Please login."); document.getElementById("signupForm").classList.add("hidden"); }
+function login(){ const username=document.getElementById("username").value; const password=document.getElementById("password").value; const user=JSON.parse(localStorage.getItem(username)); if(user && user.password===password){ currentUser=user; document.getElementById("authCard").classList.add("hidden"); document.getElementById("dashboard").classList.remove("hidden"); document.getElementById("displayUser").innerText=user.username; document.getElementById("profileEmail").innerText=user.email; document.getElementById("profileAge").innerText=user.age; document.getElementById("profileWeight").innerText=user.weight; document.getElementById("profileHeight").innerText=user.height; document.getElementById("profileGoal").innerText=user.goal; motivate("Welcome back! Keep pushing! 💪"); drawChart(); } else { alert("Invalid username or password"); } }
+function logout(){ location.reload(); }
+function showTab(tab){ ["workoutTab","dietTab","profileTab","aiTab"].forEach(id=>document.getElementById(id).classList.add("hidden")); document.getElementById(tab+"Tab").classList.remove("hidden"); document.querySelectorAll(".tabs button").forEach(btn=>btn.classList.remove("active")); event.target.classList.add("active"); }
+function logWorkout(){ const type=document.getElementById("workoutType").value; const dur=document.getElementById("duration").value; const notes=document.getElementById("notes").value; const hist=document.getElementById("workoutHistory"); const entry=document.createElement("p"); entry.textContent=`${type} - ${dur} min ${notes? "(" + notes + ")" : ""}`; hist.appendChild(entry); motivate("🔥 Workout logged!"); }
+function logDiet(){ const meal=document.getElementById("mealType").value; const food=document.getElementById("food").value; const cal=document.getElementById("calories").value; const hist=document.getElementById("dietHistory"); const entry=document.createElement("p"); entry.textContent=`${meal}: ${food} - ${cal} kcal`; hist.appendChild(entry); motivate("🥗 Meal logged!"); const suggestedCalories = currentUser.goal==="Weight Loss"?1800:currentUser.goal==="Muscle Gain"?2500:2000; const diff=cal-suggestedCalories; const suggestion=document.getElementById("dietSuggestion"); suggestion.innerText=diff>0?`⚠️ You exceeded your suggested calories by ${diff} kcal`:`✅ Good! You are under by ${Math.abs(diff)} kcal`; }
+function motivate(msg){ const m=document.getElementById("motivation"); m.textContent=msg; m.style.display="block"; setTimeout(()=>m.style.display="none",2000); }
+function emergencyCall(){ window.location.href="tel:112"; }
+function showTip(){ alert("💡 Tip: Stay hydrated & maintain proper form!"); }
+function drawChart(){ const ctx=document.getElementById('aiChart').getContext('2d'); new Chart(ctx,{ type:'line', data:{ labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets:[{ label:'Calories Burned', data:[300,400,350,500,450,600,400], borderColor:'#39ff14', backgroundColor:'rgba(57,255,20,0.3)', fill:true, tension:0.4 }] }, options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e6f2e6' } } }, scales:{ x:{ ticks:{ color:'#e6f2e6' } }, y:{ ticks:{ color:'#e6f2e6' } } } } }); document.getElementById('aiWorkout').innerText=`Workout Suggestion: 30min Cardio + 20min Strength`; document.getElementById('aiDiet').innerText=`Diet Suggestion: ${currentUser.goal==='Weight Loss'?'Low Carb, High Protein':'Balanced Diet'}`; }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
